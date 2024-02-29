@@ -1,9 +1,9 @@
 [submodule "linux"]
 	path = linux
-	url = https://github.com/revyos/k230-linux-kernel.git
+	url = https://github.com/ruyisdk/k230-rv64ilp32-linux-kernel.git
 [submodule "opensbi"]
 	path = opensbi
-	url = https://github.com/revyos/opensbi.git
+	url = https://github.com/ruyisdk/k230-rv64ilp32-opensbi.git
 [submodule "uboot"]
 	path = uboot
-	url = https://github.com/revyos/k230-vendor-uboot.git
+	url = https://github.com/ruyisdk/k230-rv64ilp32-u-boot.git
