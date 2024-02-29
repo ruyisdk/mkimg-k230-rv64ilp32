@@ -6,10 +6,11 @@ set -eu
 BUILD_DIR=${BUILD_DIR:-build}
 OUTPUT_DIR=${OUTPUT_DIR:-output}
 VENV_DIR=${VENV_DIR:-venv}
-ABI=${ABI:-rv64}
+ABI=${ABI:-rv64ilp32} # rv64 or rv64ilp32
 BOARD=${BOARD:-canmv}
 ARCH=${ARCH:-riscv}
 CROSS_COMPILE=${CROSS_COMPILE:-riscv64-unknown-linux-gnu-}
+RV64ILP32_TOOLCHAIN_HOME=${RV64ILP32_TOOLCHAIN_HOME:-"/opt/rv64ilp32/"}
 TIMESTAMP=${TIMESTAMP:-$(date +%Y%m%d-%H%M%S)}
 
 CHROOT_TARGET=${CHROOT_TARGET:-target}
@@ -26,9 +27,20 @@ OUTPUT_DIR=$(readlink -f ${OUTPUT_DIR})
 SCRIPT_DIR=$(readlink -f $(dirname $0))
 
 function build_linux() {
+  OLD_PATH=$PATH
+  OLD_CROSS_COMPILE=${CROSS_COMPILE}
+  if [ "${ABI}" = "rv64ilp32" ]; then
+    export PATH="${RV64ILP32_TOOLCHAIN_HOME}/riscv/bin:$PATH"
+    export CROSS_COMPILE=riscv64-unknown-elf-
+  fi
   pushd linux
   {
-    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${LINUX_BUILD} k230_evb_linux_enable_vector_defconfig
+    if [ "${ABI}" = "rv64ilp32" ]; then
+      make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${LINUX_BUILD} k230_evb_linux_enable_vector_defconfig 64ilp32.config
+    else
+      make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${LINUX_BUILD} k230_evb_linux_enable_vector_defconfig
+    fi
+
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${LINUX_BUILD} -j$(nproc) dtbs
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${LINUX_BUILD} -j$(nproc)
 
@@ -39,9 +51,17 @@ function build_linux() {
     cp -v ${LINUX_BUILD}/arch/riscv/boot/dts/canaan/k230_canmv.dtb ${OUTPUT_DIR}/k230_canmv_${ABI}.dtb
   }
   popd
+  export PATH=$OLD_PATH
+  export CROSS_COMPILE=${OLD_CROSS_COMPILE}
 }
 
 function build_opensbi() {
+  OLD_PATH=$PATH
+  OLD_CROSS_COMPILE=${CROSS_COMPILE}
+  if [ "${ABI}" = "rv64ilp32" ]; then
+    export PATH="${RV64ILP32_TOOLCHAIN_HOME}/riscv/bin:$PATH"
+    export CROSS_COMPILE=riscv64-unknown-elf-
+  fi
   pushd opensbi
   {
     make \
@@ -57,6 +77,8 @@ function build_opensbi() {
     cp -v ${OPENSBI_BUILD}/platform/generic/firmware/fw_payload.bin ${OUTPUT_DIR}/k230_${BOARD}_${ABI}.bin
   }
   popd
+  export PATH=$OLD_PATH
+  export CROSS_COMPILE=${OLD_CROSS_COMPILE}
 }
 
 function build_uboot() {
