@@ -19,12 +19,15 @@ env:
   wget_alias: 'wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0'
   ARCH: riscv
   CROSS_COMPILE: riscv64-unknown-linux-gnu-
-  KBUILD_BUILD_USER: builder
-  KBUILD_BUILD_HOST: revyos-riscv-builder
+  KBUILD_BUILD_USER: ruyisdk
+  KBUILD_BUILD_HOST: ruyisdk-riscv-builder
+  GIT_USER: ruyisdk
+  GIT_EMAIL: "ruyisdk-riscv-builder@plctlab.org"
   KDEB_COMPRESS: xz
   KDEB_CHANGELOG_DIST: unstable
   OUTPUT: output
   RV64ILP32_TOOLCHAIN_HOME: /opt/rv64ilp32/
+  UBOOT_RV64_REVERT_COMMIT: "05c93ec8ffeeb5461f6c06b1f56b52607a699e19"
 
 jobs:
   mkrootfs:
@@ -59,6 +62,11 @@ jobs:
               rm -rf ${rv64ilp32_toolchain_file_name}
               export PATH="/opt/riscv/bin:$PATH"
               echo "PATH=${PATH}" >> $GITHUB_ENV
+
+      - name: Configure git global config
+        run: |
+              git config --global user.name ${GIT_USER}
+              git config --global user.email ${GIT_EMAIL}
 
       - name: Checkout genimage
         uses: actions/checkout@v4

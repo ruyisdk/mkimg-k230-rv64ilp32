@@ -11,6 +11,7 @@ BOARD=${BOARD:-canmv}
 ARCH=${ARCH:-riscv}
 CROSS_COMPILE=${CROSS_COMPILE:-riscv64-unknown-linux-gnu-}
 RV64ILP32_TOOLCHAIN_HOME=${RV64ILP32_TOOLCHAIN_HOME:-"/opt/rv64ilp32/"}
+UBOOT_RV64_REVERT_COMMIT=${UBOOT_RV64_REVERT_COMMIT:-"05c93ec8ffeeb5461f6c06b1f56b52607a699e19"}
 TIMESTAMP=${TIMESTAMP:-$(date +%Y%m%d-%H%M%S)}
 
 CHROOT_TARGET=${CHROOT_TARGET:-target}
@@ -87,10 +88,17 @@ function build_uboot() {
   pip install gmssl
   pushd uboot
   {
+    if [ "${ABI}" = "rv64" ]; then
+      sed -i "s/run rv64ilp32_k230/run rv64_k230/g" include/configs/k230_evb.h
+    fi
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${UBOOT_BUILD} k230_${BOARD}_defconfig
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} O=${UBOOT_BUILD} -j$(nproc)
     cp -av ${UBOOT_BUILD}/u-boot-spl-k230.bin ${OUTPUT_DIR}/u-boot-spl-k230_${BOARD}.bin
     cp -av ${UBOOT_BUILD}/fn_u-boot.img ${OUTPUT_DIR}/fn_u-boot_${BOARD}.img
+    if [ "${ABI}" = "rv64" ]; then
+      rm -rf include/configs/k230_evb.h
+      git checkout include/configs/k230_evb.h
+    fi
   }
   popd
   deactivate
