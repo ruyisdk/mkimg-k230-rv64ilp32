@@ -102,7 +102,7 @@ function build_rootfs() {
 }
 
 function build_img() {
-  genimage --config configs/${BOARD}.cfg \
+  genimage --config configs/${BOARD}_${ABI}.cfg \
     --inputpath "${OUTPUT_DIR}" \
     --outputpath "${OUTPUT_DIR}" \
     --rootpath="$(mktemp -d)"
