@@ -83,24 +83,24 @@ jobs:
 
       - name: Make Image
         run: |
-              sudo -E --preserve-env=PATH bash ./build.sh build all
+              bash ./build.sh build all
 
       - name: Make Checksum file & Compress files
         run: |
             pushd ${OUTPUT}
-              mv sysimage-sdcard*.img k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}.img
-              sha256sum k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}.img k230_${{ env.BOARD }}_${{ env.ABI }}.bin > SHA256SUMS
-              sha512sum k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}.img k230_${{ env.BOARD }}_${{ env.ABI }}.bin > SHA512SUMS
-              zstd k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}.img
+              mv sysimage-sdcard*.img k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}.img
+              sha256sum k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}.img k230_${{ env.BOARD }}_${{ env.ABI }}.bin > SHA256SUMS
+              sha512sum k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}.img k230_${{ env.BOARD }}_${{ env.ABI }}.bin > SHA512SUMS
+              zstd k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}.img
             popd
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
           retention-days: 30
-          name: k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}
+          name: k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}
           path: |
-                  ${{ env.OUTPUT }}/k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}.img
+                  ${{ env.OUTPUT }}/k230-sdcard-${{ env.DISTRO }}-${{ env.BOARD }}-${{ env.ABI }}.img
                   ${{ env.OUTPUT }}/k230_${{ env.BOARD }}_${{ env.ABI }}.bin
                   ${{ env.OUTPUT }}/SHA256SUMS
                   ${{ env.OUTPUT }}/SHA512SUMS
