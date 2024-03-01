@@ -51,8 +51,6 @@ jobs:
               sudo apt install -y gdisk dosfstools build-essential autoconf automake autotools-dev ninja-build make \
                                   libncurses-dev gawk flex bison openssl libssl-dev tree \
                                   qemu-user-static binfmt-support mmdebstrap zstd libconfuse-dev mtools debian-keyring debian-archive-keyring
-              ${wget_alias} https://mirror.iscas.ac.cn/revyos/revyos-addons/pool/main/r/revyos-keyring/revyos-keyring_2023.06.12_all.deb
-              sudo apt install ./revyos-keyring_2023.06.12_all.deb
               ${wget_alias} ${mainline_toolchain}/${mainline_toolchain_file_name}
               tar -xvf ${mainline_toolchain_file_name} -C /opt
               rm -rf ${mainline_toolchain_file_name}
