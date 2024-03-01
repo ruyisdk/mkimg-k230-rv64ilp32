@@ -105,8 +105,13 @@ function build_uboot() {
 }
 
 function build_rootfs() {
-  curl -o ${OUTPUT_DIR}/${ROOTFS_IMAGE_FILE} \
-    https://openkoji.iscas.ac.cn/repos/fc38-rv32/qemu/root.ext4
+  pushd ${OUTPUT_DIR}
+  {
+    curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/root.ext4.zst
+    unzstd root.ext4.zst
+    mv root.ext4 ${ROOTFS_IMAGE_FILE}
+  }
+  popd
 }
 
 function build_img() {
