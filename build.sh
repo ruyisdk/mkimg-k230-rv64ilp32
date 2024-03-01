@@ -132,7 +132,9 @@ function cleanup_build() {
 }
 
 function usage() {
-  echo "Usage: $0 build/clean"
+  echo "Usage: $0 build <target>"
+  echo "Usage: $0 clean"
+  echo "Here <target> can be: linux, opensbi, uboot, rootfs, img, linux_opensbi_uboot, all"
 }
 
 function fault() {
