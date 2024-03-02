@@ -14,6 +14,7 @@ RV64ILP32_TOOLCHAIN_HOME=${RV64ILP32_TOOLCHAIN_HOME:-"/opt/rv64ilp32/"}
 UBOOT_RV64_REVERT_COMMIT=${UBOOT_RV64_REVERT_COMMIT:-"05c93ec8ffeeb5461f6c06b1f56b52607a699e19"}
 TIMESTAMP=${TIMESTAMP:-$(date +%Y%m%d-%H%M%S)}
 
+DISTRO=${DISTRO:-yocto_rv32} # yocto_rv32 or fedora_rv32
 CHROOT_TARGET=${CHROOT_TARGET:-target}
 ROOTFS_IMAGE_SIZE=2G
 ROOTFS_IMAGE_FILE="k230_root.ext4"
@@ -107,9 +108,18 @@ function build_uboot() {
 function build_rootfs() {
   pushd ${OUTPUT_DIR}
   {
-    curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/root.ext4.zst
-    unzstd root.ext4.zst
-    mv root.ext4 ${ROOTFS_IMAGE_FILE}
+    if [[ $DISTRO == "fedora_rv32" ]]; then
+      curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/root.ext4.zst
+      unzstd root.ext4.zst
+      mv root.ext4 ${ROOTFS_IMAGE_FILE}
+    elif [[ $DISTRO == "yocto_rv32" ]]; then
+      curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4.zst
+      unzstd core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4.zst
+      mv core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4 ${ROOTFS_IMAGE_FILE}
+    else
+      echo "DISTRO: ${DISTRO} ?????"
+      exit 1
+    fi
   }
   popd
 }
