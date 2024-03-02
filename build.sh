@@ -113,9 +113,9 @@ function build_rootfs() {
       unzstd root.ext4.zst
       mv root.ext4 ${ROOTFS_IMAGE_FILE}
     elif [[ $DISTRO == "yocto_rv32" ]]; then
-      curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4.zst
-      unzstd core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4.zst
-      mv core-image-full-cmdline-qemuriscv32.rootfs-20240302021137.ext4 ${ROOTFS_IMAGE_FILE}
+      curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4.zst
+      unzstd core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4.zst
+      mv core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4 ${ROOTFS_IMAGE_FILE}
     else
       echo "DISTRO: ${DISTRO} ?????"
       exit 1
