@@ -116,6 +116,10 @@ function build_rootfs() {
       curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4.zst
       unzstd core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4.zst
       mv core-image-minimal-qemuriscv32.rootfs-20240302042035.ext4 ${ROOTFS_IMAGE_FILE}
+    elif [[ $DISTRO == "fedora_rv64" ]]; then
+      curl -OL https://github.com/ruyisdk/mkimg-k230-rv64ilp32/releases/download/fedora_rv32_rootfs/root-lp64.ext4.zst
+      unzstd root-lp64.ext4.zst
+      mv root-lp64.ext4 ${ROOTFS_IMAGE_FILE}
     else
       echo "DISTRO: ${DISTRO} ?????"
       exit 1

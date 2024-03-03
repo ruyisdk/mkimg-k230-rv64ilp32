@@ -35,8 +35,11 @@ jobs:
       fail-fast: false
       matrix:
         model: [canmv, evb]
-        distro: [yocto_rv32, fedora_rv32]
+        distro: [yocto_rv32, fedora_rv32, fedora_rv64]
         abi: [rv64ilp32, rv64]
+        exclude:
+          - distro: fedora_rv64
+            abi: rv64ilp32
 
     runs-on: ubuntu-22.04
     env:
